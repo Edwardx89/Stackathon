@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 export const Bot = (props) => (
   <div>
+  HI
    <div className="container">
     <input id="speech" type="text" />
     <button id="rec" className="btn">Speak</button>
