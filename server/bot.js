@@ -19,6 +19,10 @@ module.exports = require('express').Router()
     request.end()
   })
 
+  .get('/', (req, res, next) => {
+    res.sendStatus(200)
+  })
+
   // .post('/',
   //   (req, res, next) =>
 

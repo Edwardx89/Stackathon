@@ -1,7 +1,9 @@
 'use strict'
+const path = require('path');
 const secrets = require('../secrets')
 const express = require('express')
 const bodyParser = require('body-parser')
+const {resolve} = require('path');
 // const apiai = require('apiai')
 
 // // using apiai token
@@ -19,7 +21,10 @@ module.exports = expressApp
   .use(bodyParser.urlencoded({ extended: true }))
   .use(bodyParser.json())
   // Serve our api to ./api
-  .use('/', require('./api'))
+  .use('/bot', require('./api'))
+
+  // Send index.html for everything else.
+  .get('/*', (_, res) => res.sendFile(resolve(__dirname, '..', 'public', 'index.html')))
 
 // setting up server
 const server = expressApp.listen(process.env.PORT || 5000, () => {
