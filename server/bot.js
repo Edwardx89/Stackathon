@@ -3,7 +3,7 @@
 module.exports = require('express').Router()
   .get('/',
     (req, res, next) =>
-      res.send('hi'))
+      res.send('response'))
 
   // .post('/',
   //   (req, res, next) =>
