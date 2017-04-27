@@ -4,7 +4,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const apiai = require('apiai')
 
-//using apiai token
+// using apiai token
 const app = apiai(secrets)
 
 const expressApp = express()
