@@ -5,7 +5,8 @@ const ANSWER = 'ANSWER'
 
 /* ---------------<   ACTION CREATORS   >------------------- */
 export const getResponse = response => ({
-  type: ANSWER, response
+  type: ANSWER,
+  response: response
 })
 
 /* -------------------<   REDUCERS   >--------------------- */
@@ -14,6 +15,7 @@ const initialState = {
 }
 
 const reducer = (state = initialState, action) => {
+  console.log(action)
   switch (action.type) {
   case ANSWER:
     return Object.assign({}, state, {

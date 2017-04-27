@@ -4,6 +4,7 @@ import rootReducer from './reducers'
 import createLogger from 'redux-logger'
 import thunkMiddleware from 'redux-thunk'
 
+console.log('reached store')
 const store = createStore(
   rootReducer,
   composeWithDevTools(

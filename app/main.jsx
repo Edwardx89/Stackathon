@@ -6,11 +6,12 @@ import { connect, Provider } from 'react-redux'
 
 import store from './store'
 import Bot from './components/Bot'
-import getBotResponse from './reducers/index'
+import {getBotResponse} from './reducers/index'
 
 
 const onBotEnter = () => {
-  store.dispatch(getBotResponse('hi'))
+  console.log('calling this')
+  store.dispatch(getBotResponse({message: 'hi'}))
 }
 
 
