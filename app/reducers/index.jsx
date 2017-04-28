@@ -5,8 +5,7 @@ const ANSWER = 'ANSWER'
 
 /* ---------------<   ACTION CREATORS   >------------------- */
 export const getResponse = response => ({
-  type: ANSWER,
-  response: response
+  type: ANSWER, response
 })
 
 /* -------------------<   REDUCERS   >--------------------- */
