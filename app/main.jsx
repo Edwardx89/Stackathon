@@ -11,7 +11,7 @@ import {getBotResponse} from './reducers/index'
 
 const onBotEnter = () => {
   console.log('calling this')
-  store.dispatch(getBotResponse({message: 'what"s the weather in nyc'}))
+  store.dispatch(getBotResponse({message: 'Hi'}))
 }
 
 

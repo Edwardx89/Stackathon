@@ -26,6 +26,7 @@ module.exports = require('express').Router()
   })
 
   .post('/weather', (req, res, next) => {
+    console.log('this is being called')
     const textRequest = app.textRequest(req.body.message, {
       sessionId: 'Where to get this sessionId?'
     })
@@ -35,16 +36,16 @@ module.exports = require('express').Router()
       const restUrl = 'https://api.apixu.com/v1/current.json?key=' + secrets.weather + '&q=' + city
 
       request.get(restUrl, (err, response, body) => {
-        // console.log('response for weather', response)
-        if (!err && response.statusCode == 200) {
+        console.log('response for weather', response)
+        if (!err && response.statusCode === 200) {
           const json = JSON.parse(body)
-          console.log('JSON', json)
+          // console.log('JSON', json)
           let msg = json.location.name + ': '+json.current.condition.text + ' and the temperature is ' + json.current.temp_f + ' ℉'
           return res.json({
             speech: msg,
             displayText: msg,
             source: 'weather'
-          })
+          }).end();
         } else {
           return res.status(400).json({
             speech: "Sorry, We can't find what you are looking for.",
@@ -52,7 +53,7 @@ module.exports = require('express').Router()
               code: 400,
               errorType: 'I failed to look up the city name.'
             }
-          })
+          }).end();
         }
       })
     }
