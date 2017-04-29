@@ -10,7 +10,7 @@ export const getResponse = response => ({
 
 /* -------------------<   REDUCERS   >--------------------- */
 const initialState = {
-  response: {}
+  response: ''
 }
 
 const reducer = (state = initialState, action) => {
@@ -32,6 +32,7 @@ export const getBotResponse = (message) => dispatch => {
   .then(response => dispatch(getResponse(response)))
 }
 
+// export const getIntent = (message) =>
 const rootReducer = combineReducers({
   reducer
 })

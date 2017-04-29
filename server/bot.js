@@ -8,10 +8,12 @@ const request = require('request')
 module.exports = require('express').Router()
   .post('/',
   (req, res, next) => {
+    console.log('in the post / ')
     const textRequest = app.textRequest(req.body.message, {
       sessionId: 'Where to get this sessionId?'
     })
     textRequest.on('response', function (response) {
+      console.log(response)
       res.send(response.result.fulfillment.speech)
     })
     textRequest.on('error', function (error) {
@@ -26,7 +28,7 @@ module.exports = require('express').Router()
   })
 
   .post('/weather', (req, res, next) => {
-    console.log('this is being called')
+    console.log('checking weather')
     const textRequest = app.textRequest(req.body.message, {
       sessionId: 'Where to get this sessionId?'
     })
@@ -61,6 +63,7 @@ module.exports = require('express').Router()
 
   /* For Facebook Validation */
   .get('/facebook', (req, res) => {
+    console.log('this is get request with facebook')
     if (req.query['hub.mode'] && req.query['hub.verify_token'] === secrets.facebook) {
       res.status(200).send(req.query['hub.challenge']);
     } else {

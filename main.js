@@ -4,9 +4,9 @@ const bodyParser = require('body-parser')
 const apiai = require('apiai')
 
 // using apiai token
-const app = apiai(secrets)
+const app = apiai(secrets.apiAi)
 
-const request = app.textRequest('I want to book a hotel', {
+const request = app.textRequest('what is the weather in nyc', {
   sessionId: 'Where to get this sessionId?'
 })
 

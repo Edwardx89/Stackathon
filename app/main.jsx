@@ -9,16 +9,15 @@ import Bot from './components/Bot'
 import {getBotResponse} from './reducers/index'
 
 
-const onBotEnter = () => {
-  console.log('calling this')
-  store.dispatch(getBotResponse({message: 'Hi'}))
-}
+// const onBotEnter = () => {
+//   store.dispatch(getBotResponse({message: 'Hi'}))
+// }
 
 
 render(
   <Provider store={store}>
     <Router history={browserHistory}>
-      <Route path="/" onEnter={onBotEnter} component={Bot}>
+      <Route path="/" component={Bot}>
         <Route path="/bot" component={Bot} />
       </Route>
     </Router>

@@ -3,30 +3,33 @@ import { Link, browserHistory } from 'react-router'
 
 class Bot extends React.Component {
   constructor(props) {
-    super(props)
-    this.onSubmitClick.bind(this)
+    super(props);
+    this.state = {}
+    this.onSubmitClick = this.onSubmitClick.bind(this)
   }
 
   onSubmitClick(evt) {
-    console.log('in submit', this.props)
-    evt.preventDefault();
-    console.log('evt', evt.target)
+    evt.preventDefault()
+    let msg = evt.target.text.value
+    console.log('in submit')
+    console.log('evt', evt.target.text.value)
     console.log('evt.val', evt.target.value)
-    this.props.getResponse(evt.target.value)
+    console.log('props', this.props) // ==> THIS RETURNING Null?
+    this.props.getBotResponse({message: msg})
   }
   render() {
-    console.log(this.props)
+    console.log('render props, this.props', this.props)
     return (
       <div className="image">
         <div className="bot_image">
           <img src="https://futureoflife.org/wp-content/uploads/2015/11/artificial_intelligence_benefits_risk.jpg" />
         </div>
         <div className="container">
-          <form>
+          <form onSubmit={this.onSubmitClick}>
             <input id="speech" type="text" name="text" />
-            <button id="rec" className="btn">Speak</button>
+            <button id="rec" className="btn" type="submit">Speak</button>
             <div id="spokenResponse" className="spoken-response">
-              <div className="spoken-response__text">PUT RESPONSE HERE</div>
+              <div className="spoken-response__text">{this.props.state.reducer.response}</div>
             </div>
           </form>
         </div>
@@ -46,19 +49,12 @@ class Bot extends React.Component {
 /* -------------------<   CONTAINER   >-------------------- */
 
 import { connect } from 'react-redux'
-// import rootReducer from '../reducers/index'
+import { getBotResponse } from '../reducers/index'
 
 
-const mapToState = (state) => {
+const mapToState = (state) => ({
   state
-}
+})
 
-// const mapStateToProps = (dispatch) => {
-//   return {
-//     getResponse: (msg) => {
-//       dispatch(getBotResponse(msg))
-//     }
-//   }
-// }
-export default connect(mapToState)(Bot)
+export default connect(mapToState, ({ getBotResponse }))(Bot)
 
