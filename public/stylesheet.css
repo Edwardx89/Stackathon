@@ -6,12 +6,13 @@ html {
     }
     body {
       background-color: #7584A2;
-      font-family: "Titillium Web", Arial, sans-serif;
-      font-size: 20px;
+      /*font-family: "Titillium Web", Arial, sans-serif;*/
+      /*font-size: 20px;*/
       margin: 0;
+      background-repeat: repeat
     }
     .container {
-      position: fixed;
+      position: absolute;
       top: 10%;
       left: 50%;
       -webkit-transform: translate(-50%, -50%);
@@ -56,34 +57,30 @@ html {
       background-color: #1888A9;
       color: #183035;
     }
-    .debug {
+    .owner {
       bottom: 0;
       position: fixed;
       right: 0;
     }
-    .debug__content {
-      font-size: 14px;
-      max-height: 0;
-      overflow: hidden;
-      -webkit-transition: all 0.35s ease-in;
-    }
-    .debug__content.is-active {
-      display: block;
-      max-height: 500px;
-    }
-    .debug__btn {
+    .owner_btn {
       width: 100%;
     }
     .spoken-response {
-      max-height: 0;
+      max-height: 60px;
+      position: relative;
       -webkit-transition: all 0.35s ease-in;
     }
     .spoken-response.is-active {
-      max-height: 400px;
+      /*max-height: 400px;*/
+      overflow: scroll;
     }
     .spoken-response__text {
       background-color: #040E23;
       color: #7584A2;
       padding: 1em;
+    }
+    .img-thumbnail {
+      height: 100 px;
+      widows: 150 px;
     }
 

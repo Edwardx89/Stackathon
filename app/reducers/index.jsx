@@ -3,6 +3,7 @@ import { combineReducers } from 'redux'
 /* -------------------<   ACTIONS   >--------------------- */
 const ANSWER = 'ANSWER'
 const WEATHER = 'WEATHER'
+const YELP = 'YELP'
 
 /* ---------------<   ACTION CREATORS   >------------------- */
 export const getResponse = response => ({
@@ -13,9 +14,14 @@ export const getWeather = response => ({
   type: WEATHER, response
 })
 
+export const getRestaurants = response => ({
+  type: YELP, response
+})
+
 /* -------------------<   REDUCERS   >--------------------- */
 const initialState = {
-  response: ''
+  response: '',
+  type: '',
 }
 
 const reducer = (state = initialState, action) => {
@@ -28,6 +34,11 @@ const reducer = (state = initialState, action) => {
   case WEATHER:
     return Object.assign({}, state, {
       response: action.response
+    })
+  case YELP:
+    return Object.assign({}, state, {
+      response: action.response,
+      type: action.type
     })
   }
   return state
@@ -42,9 +53,11 @@ export const getBotResponse = (message) => dispatch => {
   .then(response => dispatch(getResponse(response)))
 }
 
-export const getWeatherResponse = (message) => dispatch => {
-  console.log('getting to weather dispatcher', message)
-  // dispatch(getWeather(message))
+export const getYelp = (restaurants) => dispatch => {
+  console.log('getting to yelp dispatcher', restaurants)
+  axios.post('/bot/yelp', restaurants)
+  .then(res => res.data)
+  .then(restaurants => dispatch(getRestaurants(restaurants)))
 }
 
 // export const getIntent = (message) =>

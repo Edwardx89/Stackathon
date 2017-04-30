@@ -4,6 +4,10 @@ const apiai = require('apiai')
 const app = apiai(secrets.apiAi)
 const axios = require('axios')
 const request = require('request')
+const yelp =require('yelp-fusion')
+
+const clientId = secrets.yelpClientId;
+const clientSecret = secrets.yelpClientSecret;
 
 module.exports = require('express').Router()
   .post('/weather', (req, res, next) => {
@@ -39,6 +43,32 @@ module.exports = require('express').Router()
     }
   })
 
+.post('/yelp',
+  (req, res, next) => {
+    console.log('in the yelp post / ', req.body)
+    const searchRequest = {
+          categories: req.body.categories,
+          location: req.body.location,
+          limit: 5,
+        }
+        yelp.accessToken(clientId, clientSecret)
+        .then(response => {
+          const client = yelp.client(response.jsonBody.access_token);
+          client.search(searchRequest).then(response => {
+            const firstResult = response.jsonBody.businesses;
+            const prettyJson = JSON.stringify(firstResult, null, 4);
+            res.send(prettyJson);
+            console.log(prettyJson)
+        });
+      }).catch(e => {
+        console.log(e);
+      });
+  })
+
+  .get('/', (req, res, next) => {
+    res.sendStatus(200)
+  })
+
   .post('/',
   (req, res, next) => {
     console.log('in the post / ')
@@ -46,9 +76,30 @@ module.exports = require('express').Router()
       sessionId: 'Where to get this sessionId?'
     })
     textRequest.on('response', function (response) {
-      console.log('this touches the text request.on', response)
-      res.send(response.result.fulfillment.speech)
+      console.log('checking condition', response.result.actionIncomplete === false)
+    //   if (response.result.action === 'restaurant.search' && response.result.actionIncomplete === false){
+    //     console.log('restaurant is true')
+    //     const searchRequest = {
+    //       term: response.result.parameters.cuisine,
+    //       location: response.result.parameters['zip-code']
+    //     }
+    //     yelp.accessToken(clientId, clientSecret)
+    //     .then(response => {
+    //       const client = yelp.client(response.jsonBody.access_token);
+    //       client.search(searchRequest).then(response => {
+    //         const firstResult = response.jsonBody.businesses;
+    //         const prettyJson = JSON.stringify(firstResult, null, 4);
+    //         console.log(prettyJson)
+    //         res.send(prettyJson);
+    //     });
+    //   }).catch(e => {
+    //     console.log(e);
+    //   })
+    // } else {
+      res.send(response.result.fulfillment.speech || 'Sorry I do not understand.')
+    // }
     })
+
     textRequest.on('error', function (error) {
       res.send(('Sorry, I am having trouble with your request.'))
       console.log('error on this request coming back', error)

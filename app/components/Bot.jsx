@@ -3,6 +3,11 @@ import { Link, browserHistory } from 'react-router'
 import secrets from '../../secrets'
 import apiai from 'apiai'
 const app = apiai(secrets.apiAi)
+import yelp from 'yelp-fusion'
+import { Card, CardTitle } from 'react-materialize'
+
+const clientId = secrets.yelpClientId;
+const clientSecret = secrets.yelpClientSecret;
 
 
 class Bot extends React.Component {
@@ -19,57 +24,84 @@ class Bot extends React.Component {
     console.log('in submit')
     console.log('evt', evt.target.text.value)
     console.log('evt.val', evt.target.value)
-    console.log('props', this.props) // ==> THIS RETURNING Null?
     this.checkRequest(msg)
+    evt.target.text.value = ''
   }
 
   checkRequest(msg) {
     const props = this.props
     console.log('in check request', msg)
-    // const textRequest = app.textRequest(msg, {
-    //   sessionId: 'Where to get this sessionId?'
-    // })
-    // textRequest.on('response', function (response) {
-    //   console.log('this touches the text request.on in BOT COMPONENT', response)
-    //   if (response.result.action === 'weather'){
-    //     console.log('weather is true')
-    //     const city = response.result.parameters.address.city || response.result.parameters.address['zip-code'] || response.result.parameters.address['admin-area']
-    //     const restUrl = 'https://api.apixu.com/v1/current.json?key=' + secrets.weather + '&q=' + city
-    //     props.getWeatherResponse({restUrl})
-    //   } else {
+    const textRequest = app.textRequest(msg, {
+      sessionId: 'Where to get this sessionId?'
+    })
+    textRequest.on('response', function (response) {
+      console.log('this touches the text request.on in BOT COMPONENT', response)
+      console.log(response)
+      if (response.result.action === 'restaurant.search' && response.result.actionIncomplete === false){
+        console.log('restaurant is true')
+        const searchRequest = {
+          categories: response.result.parameters.cuisine,
+          location: response.result.parameters['zip-code']
+        }
+        props.getYelp(searchRequest)
+      } else {
         console.log('hitting getBotResponse in checkrequest')
         props.getBotResponse({message: msg})
       }
-    // })
-    // textRequest.on('error', function (error) {
-    //   console.log('error on this request coming back', error)
-    // })
-    // textRequest.end()
-  // }
+    })
+    textRequest.on('error', function (error) {
+      console.log('error on this request coming back', error)
+    })
+    textRequest.end()
+  }
 
   render() {
     console.log('render props, this.props', this.props)
+    const type = this.props.state.reducer.type
+    const response = this.props.state.reducer.response
+    console.log(response)
     return (
-      <div className="image">
-        <div className="bot_image">
+      <div>
+        {/*<div className="bot_image">
           <img src="https://futureoflife.org/wp-content/uploads/2015/11/artificial_intelligence_benefits_risk.jpg" />
-        </div>
+        </div>*/}
         <div className="container">
           <form onSubmit={this.onSubmitClick}>
             <input id="speech" type="text" name="text" />
             <button id="rec" className="btn" type="submit">Speak</button>
             <div id="spokenResponse" className="spoken-response">
-              <div className="spoken-response__text">{this.props.state.reducer.response}</div>
+          {type === 'YELP' ? ( response.map((restaurant) => {
+            return (<div className="spoken-response__text">
+                     <div class="row">
+        <div class="col s12 m7">
+          <div class="card">
+          <h4>Restaurant Name: {restaurant.name} </h4>
+            <div class="card-image">
+              <img src={restaurant.image_url} />
             </div>
+            <div class="card-content">
+              <ul>
+                    <li>Address : {restaurant.location.address1}, {restaurant.location.city}, {restaurant.location.state} </li>
+                    <li>Phone Number : {restaurant.display_phone} </li>
+                    <li>Rating : {restaurant.rating} </li>
+                    </ul>
+            </div>
+            <div class="card-action">
+              <a href={restaurant.url} >More info</a>
+            </div>
+          </div>
+        </div>
+      </div>
+                    </div>
+            )
+                  })) : <div className="spoken-response__text">{response}</div>}
+          </div>
           </form>
         </div>
-        <div className="debug">
-          <div className="debug__btn btn">
-            Debug JSON results
+        <div className="owner">
+          <div className="owner_btn btn">
+            Edward Goo - A.I. BOT
     </div>
-          <div className="debug__content">
-            <textarea id="response" cols="40" rows="20"></textarea>
-          </div>
         </div>
       </div>
     )
@@ -79,12 +111,20 @@ class Bot extends React.Component {
 /* -------------------<   CONTAINER   >-------------------- */
 
 import { connect } from 'react-redux'
-import { getBotResponse, getWeatherResponse } from '../reducers/index'
+import { getBotResponse, getYelp } from '../reducers/index'
 
 
 const mapToState = (state) => ({
   state
 })
 
-export default connect(mapToState, ({ getBotResponse, getWeatherResponse }))(Bot)
+export default connect(mapToState, ({ getBotResponse, getYelp }))(Bot)
 
+// <h4>Restaurant Name: {restaurant.name} </h4>
+//                       <img src={restaurant.image_url} className="img-thumbnail"/>
+//                     <ul>
+//                     <li>Address : {restaurant.location.address1}, {restaurant.location.city}, {restaurant.location.state} </li>
+//                     <li>Phone Number : {restaurant.display_phone} </li>
+//                     <li>Rating : {restaurant.rating} </li>
+//                     <li>More Info : {restaurant.url} </li>
+//                     </ul>
