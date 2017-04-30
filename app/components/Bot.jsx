@@ -1,11 +1,16 @@
 import React, { Component } from 'react'
 import { Link, browserHistory } from 'react-router'
+import secrets from '../../secrets'
+import apiai from 'apiai'
+const app = apiai(secrets.apiAi)
+
 
 class Bot extends React.Component {
   constructor(props) {
     super(props);
     this.state = {}
     this.onSubmitClick = this.onSubmitClick.bind(this)
+    this.checkRequest = this.checkRequest.bind(this)
   }
 
   onSubmitClick(evt) {
@@ -15,8 +20,33 @@ class Bot extends React.Component {
     console.log('evt', evt.target.text.value)
     console.log('evt.val', evt.target.value)
     console.log('props', this.props) // ==> THIS RETURNING Null?
-    this.props.getBotResponse({message: msg})
+    this.checkRequest(msg)
   }
+
+  checkRequest(msg) {
+    const props = this.props
+    console.log('in check request', msg)
+    // const textRequest = app.textRequest(msg, {
+    //   sessionId: 'Where to get this sessionId?'
+    // })
+    // textRequest.on('response', function (response) {
+    //   console.log('this touches the text request.on in BOT COMPONENT', response)
+    //   if (response.result.action === 'weather'){
+    //     console.log('weather is true')
+    //     const city = response.result.parameters.address.city || response.result.parameters.address['zip-code'] || response.result.parameters.address['admin-area']
+    //     const restUrl = 'https://api.apixu.com/v1/current.json?key=' + secrets.weather + '&q=' + city
+    //     props.getWeatherResponse({restUrl})
+    //   } else {
+        console.log('hitting getBotResponse in checkrequest')
+        props.getBotResponse({message: msg})
+      }
+    // })
+    // textRequest.on('error', function (error) {
+    //   console.log('error on this request coming back', error)
+    // })
+    // textRequest.end()
+  // }
+
   render() {
     console.log('render props, this.props', this.props)
     return (
@@ -49,12 +79,12 @@ class Bot extends React.Component {
 /* -------------------<   CONTAINER   >-------------------- */
 
 import { connect } from 'react-redux'
-import { getBotResponse } from '../reducers/index'
+import { getBotResponse, getWeatherResponse } from '../reducers/index'
 
 
 const mapToState = (state) => ({
   state
 })
 
-export default connect(mapToState, ({ getBotResponse }))(Bot)
+export default connect(mapToState, ({ getBotResponse, getWeatherResponse }))(Bot)
 

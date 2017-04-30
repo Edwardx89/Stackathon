@@ -6,6 +6,39 @@ const axios = require('axios')
 const request = require('request')
 
 module.exports = require('express').Router()
+  .post('/weather', (req, res, next) => {
+    // const textRequest = app.textRequest(req.body.message, {
+    //   sessionId: 'Where to get this sessionId?'
+    // })
+    if (req.body.result.action === 'weather') {
+      console.log('check parameters', req.body.result.parameters.address)
+      const city = req.body.result.parameters.address.city || req.body.result.parameters.address['zip-code'] || req.body.result.parameters.address['admin-area']
+      const restUrl = 'https://api.apixu.com/v1/current.json?key=' + secrets.weather + '&q=' + city
+
+      request.get(restUrl, (err, response, body) => {
+        console.log('response for weather', response)
+        if (!err && response.statusCode == 200) {
+          const json = JSON.parse(body)
+          console.log('JSON', json)
+          let msg = json.location.name + ': '+json.current.condition.text + ' and the temperature is ' + json.current.temp_f + ' ℉'
+          return res.json({
+            speech: msg,
+            displayText: msg,
+            source: 'weather'
+          })
+        } else {
+          return res.status(400).json({
+            speech: "Sorry, We can't find what you are looking for.",
+            status: {
+              code: 400,
+              errorType: 'I failed to look up the city name.'
+            }
+          })
+        }
+      })
+    }
+  })
+
   .post('/',
   (req, res, next) => {
     console.log('in the post / ')
@@ -13,7 +46,7 @@ module.exports = require('express').Router()
       sessionId: 'Where to get this sessionId?'
     })
     textRequest.on('response', function (response) {
-      console.log(response)
+      console.log('this touches the text request.on', response)
       res.send(response.result.fulfillment.speech)
     })
     textRequest.on('error', function (error) {
@@ -27,39 +60,6 @@ module.exports = require('express').Router()
     res.sendStatus(200)
   })
 
-  .post('/weather', (req, res, next) => {
-    console.log('checking weather')
-    const textRequest = app.textRequest(req.body.message, {
-      sessionId: 'Where to get this sessionId?'
-    })
-    if (req.body.result.action === 'weather') {
-      console.log('check parameters', req.body.result.parameters.address)
-      const city = req.body.result.parameters.address.city || req.body.result.parameters.address['zip-code'] || req.body.result.parameters.address['admin-area']
-      const restUrl = 'https://api.apixu.com/v1/current.json?key=' + secrets.weather + '&q=' + city
-
-      request.get(restUrl, (err, response, body) => {
-        console.log('response for weather', response)
-        if (!err && response.statusCode === 200) {
-          const json = JSON.parse(body)
-          // console.log('JSON', json)
-          let msg = json.location.name + ': '+json.current.condition.text + ' and the temperature is ' + json.current.temp_f + ' ℉'
-          return res.json({
-            speech: msg,
-            displayText: msg,
-            source: 'weather'
-          }).end();
-        } else {
-          return res.status(400).json({
-            speech: "Sorry, We can't find what you are looking for.",
-            status: {
-              code: 400,
-              errorType: 'I failed to look up the city name.'
-            }
-          }).end();
-        }
-      })
-    }
-  })
 
   /* For Facebook Validation */
   .get('/facebook', (req, res) => {
@@ -97,7 +97,7 @@ function sendMessage(event) {
   })
 
   textRequest.on('response', (response) => {
-    console.log(response)
+    console.log('sending response from server', response)
     let aiText = response.result.fulfillment.speech;
     request({
       url: 'https://graph.facebook.com/v2.6/me/messages',
