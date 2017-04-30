@@ -70,14 +70,14 @@ class Bot extends React.Component {
             <input id="speech" type="text" name="text" />
             <button id="rec" className="btn" type="submit">Speak</button>
             <div id="spokenResponse" className="spoken-response">
-          {type === 'YELP' ? ( response.map((restaurant) => {
+          {type === 'YELP' && (typeof response)==='object' ? ( response.map((restaurant) => {
             return (<div className="spoken-response__text">
                      <div class="row">
         <div class="col s12 m7">
           <div class="card">
-          <h4>Restaurant Name: {restaurant.name} </h4>
+          <h2>Restaurant Name: {restaurant.name} </h2>
             <div class="card-image">
-              <img src={restaurant.image_url} />
+              <img src={restaurant.image_url} className="img-thumbnail"/>
             </div>
             <div class="card-content">
               <ul>
