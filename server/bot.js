@@ -125,7 +125,7 @@ module.exports = require('express').Router()
   /* Handling all messenges */
   .post('/facebook', (req, res) => {
     console.log(req.body.entry[0].messaging);
-    console.log('hitting facebook')
+    console.log('hitting facebook', req.body)
     if (req.body.object === 'page') {
       req.body.entry.forEach((entry) => {
         entry.messaging.forEach((event) => {
@@ -139,7 +139,7 @@ module.exports = require('express').Router()
   })
 
 function sendMessage(event) {
-  console.log('send message func hit')
+  console.log('send message func hit',event)
   let sender = event.sender.id;
   let text = event.message.text;
 
@@ -149,22 +149,78 @@ function sendMessage(event) {
 
   textRequest.on('response', (response) => {
     console.log('sending response from server', response)
-    let aiText = response.result.fulfillment.speech;
-    request({
-      url: 'https://graph.facebook.com/v2.6/me/messages',
-      qs: { access_token: secrets.facebook},
-      method: 'POST',
-      json: {
-        recipient: { id: sender },
-        message: { text: aiText }
-      }
-    }, (error, response) => {
-      if (error) {
-        console.log('Error sending message: ', error);
-      } else if (response.body.error) {
-        console.log('Error: ', response.body.error);
-      }
-    });
+
+    if (response.result.action === 'restaurant.search' && response.result.actionIncomplete === false){
+      console.log('restaurant is true')
+        const searchRequest = {
+          categories: response.result.parameters.cuisine,
+          location: response.result.parameters['zip-code'],
+          limit: 5
+        }
+        console.log(searchRequest)
+
+        yelp.accessToken(clientId, clientSecret)
+        .then(response => {
+          const client = yelp.client(response.jsonBody.access_token);
+          client.search(searchRequest)
+          .then(response => {
+            const firstResult = response.jsonBody.businesses;
+            const prettyJson = JSON.stringify(firstResult, null, 4);
+            console.log('prettyJSON', prettyJson)
+            response.jsonBody.businesses.forEach((restaurant,idx) => {
+            console.log('hitting restaurants in forEach', restaurant)
+            let business = restaurant.name+ ': ' +" \n"+ restaurant.location.address1 + ', '+ restaurant.location.city + ', '+ restaurant.location.state+'.' + restaurant.location.zip_code + '\n'
+            + "Phone Number: " + restaurant.display_phone + '\n'
+            + "Rating: " + restaurant.rating
+            request({
+              url: 'https://graph.facebook.com/v2.6/me/messages',
+              qs: {access_token: secrets.facebook},
+              method: 'POST',
+              json: {
+                recipient: { id: sender },
+                message: { text: business }
+              }
+            })
+          })
+        })
+        }).catch(e => {
+        console.log(e);
+      });
+    //   axios.post('/bot/yelp', searchRequest)
+    //   .then(res => console.log('res.data',res.data))
+    //   .then(restaurants => restaurants.forEach((restaurant) => {
+    //     console.log('hitting restaurants in forEach', restaurant)
+    //     let business = restaurant.name+ ': ' +" "+ restaurant.location.address + ', '+ restaurant.location.city + ', '+ restaurant.location.state+'.'
+    //     request({
+    //       url: 'https://graph.facebook.com/v2.6/me/messages',
+    //       qs: {access_token: secrets.facebook},
+    //       method: 'POST',
+    //       json: {
+    //         recipient: { id: sender },
+    //         message: { text: business }
+    //       }
+    //     })
+    //   })
+    //   .catch((err) => console.log(err))
+    // )
+    } else {
+      let aiText = response.result.fulfillment.speech;
+      request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: { access_token: secrets.facebook},
+        method: 'POST',
+        json: {
+          recipient: { id: sender },
+          message: { text: aiText }
+        }
+      }, (error, response) => {
+        if (error) {
+          console.log('Error sending message: ', error);
+        } else if (response.body.error) {
+          console.log('Error: ', response.body.error);
+        }
+      });
+    }
   });
 
   textRequest.on('error', (error) => {

@@ -57,7 +57,10 @@ export const getYelp = (restaurants) => dispatch => {
   console.log('getting to yelp dispatcher', restaurants)
   axios.post('/bot/yelp', restaurants)
   .then(res => res.data)
-  .then(restaurants => dispatch(getRestaurants(restaurants)))
+  .then(restaurants => {
+    console.log(restaurants)
+    dispatch(getRestaurants(restaurants))
+  })
 }
 
 // export const getIntent = (message) =>
