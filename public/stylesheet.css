@@ -12,7 +12,7 @@ html {
       background-repeat: repeat
     }
     .container {
-      position: absolute;
+      position: relative;
       top: 10%;
       left: 50%;
       -webkit-transform: translate(-50%, -50%);
@@ -66,8 +66,9 @@ html {
       width: 100%;
     }
     .spoken-response {
-      max-height: 60px;
+      max-height: 620px;
       position: relative;
+      overflow: scroll;
       -webkit-transition: all 0.35s ease-in;
     }
     .spoken-response.is-active {
@@ -83,4 +84,12 @@ html {
       height: 100 px;
       widows: 150 px;
     }
-
+    .message-box {
+      position: absolute;
+      height: 100px;
+      right: 10px;
+      bottom: 600px;
+    }
+    .card-action {
+      color: #7584A2
+    }
