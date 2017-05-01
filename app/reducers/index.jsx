@@ -25,7 +25,7 @@ const initialState = {
 }
 
 const reducer = (state = initialState, action) => {
-  console.log(action)
+  // console.log(action)
   switch (action.type) {
   case ANSWER:
     return Object.assign({}, state, {
@@ -47,18 +47,18 @@ const reducer = (state = initialState, action) => {
 import axios from 'axios'
 
 export const getBotResponse = (message) => dispatch => {
-  console.log('bot response', message)
+  // console.log('bot response', message)
   axios.post('/bot', message)
   .then(res => res.data)
   .then(response => dispatch(getResponse(response)))
 }
 
 export const getYelp = (restaurants) => dispatch => {
-  console.log('getting to yelp dispatcher', restaurants)
+  // console.log('getting to yelp dispatcher', restaurants)
   axios.post('/bot/yelp', restaurants)
   .then(res => res.data)
   .then(restaurants => {
-    console.log(restaurants)
+    // console.log(restaurants)
     dispatch(getRestaurants(restaurants))
   })
 }

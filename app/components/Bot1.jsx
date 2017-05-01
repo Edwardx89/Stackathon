@@ -21,45 +21,45 @@ class Bot extends React.Component {
   onSubmitClick(evt) {
     evt.preventDefault()
     let msg = evt.target.text.value
-    console.log('in submit')
-    console.log('evt', evt.target.text.value)
-    console.log('evt.val', evt.target.value)
+    // console.log('in submit')
+    // console.log('evt', evt.target.text.value)
+    // console.log('evt.val', evt.target.value)
     this.checkRequest(msg)
     evt.target.text.value = ''
   }
 
   checkRequest(msg) {
     const props = this.props
-    console.log('in check request', msg)
+    // console.log('in check request', msg)
     const textRequest = app.textRequest(msg, {
       sessionId: 'Where to get this sessionId?'
     })
     textRequest.on('response', function (response) {
-      console.log('this touches the text request.on in BOT COMPONENT', response)
-      console.log(response)
+      // console.log('this touches the text request.on in BOT COMPONENT', response)
+      // console.log(response)
       if (response.result.action === 'restaurant.search' && response.result.actionIncomplete === false){
-        console.log('restaurant is true')
+        // console.log('restaurant is true')
         const searchRequest = {
           categories: response.result.parameters.cuisine,
           location: response.result.parameters['zip-code']
         }
         props.getYelp(searchRequest)
       } else {
-        console.log('hitting getBotResponse in checkrequest')
+        // console.log('hitting getBotResponse in checkrequest')
         props.getBotResponse({message: msg})
       }
     })
     textRequest.on('error', function (error) {
-      console.log('error on this request coming back', error)
+      // console.log('error on this request coming back', error)
     })
     textRequest.end()
   }
 
   render() {
-    console.log('render props, this.props', this.props)
+    // console.log('render props, this.props', this.props)
     const type = this.props.state.reducer.type
     const response = this.props.state.reducer.response
-    console.log(response)
+    // console.log(response)
     return (
       <div>
         {/*<div className="bot_image">
