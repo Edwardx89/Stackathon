@@ -4,7 +4,7 @@ import secrets from '../../secrets'
 import apiai from 'apiai'
 const app = apiai(secrets.apiAi)
 import yelp from 'yelp-fusion'
-import { Card, CardTitle, Col, Row } from 'react-materialize'
+import { Card, CardTitle } from 'react-materialize'
 
 const clientId = secrets.yelpClientId;
 const clientSecret = secrets.yelpClientSecret;
@@ -56,15 +56,16 @@ class Bot extends React.Component {
   }
 
   render() {
+    console.log('render props, this.props', this.props)
     const type = this.props.state.reducer.type
     const response = this.props.state.reducer.response
+    console.log(response)
     return (
       <div>
-        <div className="image">
-          <img src="https://www.extremetech.com/wp-content/uploads/2015/10/AI.jpg" />
-        </div>
-        <div className='container' >
-          <div className='message-box'>
+        {/*<div className="bot_image">
+          <img src="https://futureoflife.org/wp-content/uploads/2015/11/artificial_intelligence_benefits_risk.jpg" />
+        </div>*/}
+        <div className="container">
           <form onSubmit={this.onSubmitClick}>
             <input id="speech" type="text" name="text" />
             <button id="rec" className="btn" type="submit">Speak</button>
@@ -74,7 +75,10 @@ class Bot extends React.Component {
                      <div class="row">
         <div class="col s12 m7">
           <div class="card">
-          <h3>Restaurant Name: {restaurant.name} </h3>
+          <h2>Restaurant Name: {restaurant.name} </h2>
+            <div class="card-image">
+              <img src={restaurant.image_url} className="img-thumbnail"/>
+            </div>
             <div class="card-content">
               <ul>
                     <li>Address : {restaurant.location.address1}, {restaurant.location.city}, {restaurant.location.state}, {restaurant.location.zip_code} </li>
@@ -83,7 +87,7 @@ class Bot extends React.Component {
                     </ul>
             </div>
             <div class="card-action">
-              <a href={restaurant.url}>More info</a>
+              <a href={restaurant.url} >More info</a>
             </div>
           </div>
         </div>
@@ -93,8 +97,7 @@ class Bot extends React.Component {
                   })) : <div className="spoken-response__text">{response}</div>}
           </div>
           </form>
-          </div>
-          </div>
+        </div>
         <div className="owner">
           <div className="owner_btn btn">
             Edward Goo - A.I. BOT
@@ -104,6 +107,7 @@ class Bot extends React.Component {
     )
   }
 }
+
 /* -------------------<   CONTAINER   >-------------------- */
 
 import { connect } from 'react-redux'
@@ -116,3 +120,11 @@ const mapToState = (state) => ({
 
 export default connect(mapToState, ({ getBotResponse, getYelp }))(Bot)
 
+// <h4>Restaurant Name: {restaurant.name} </h4>
+//                       <img src={restaurant.image_url} className="img-thumbnail"/>
+//                     <ul>
+//                     <li>Address : {restaurant.location.address1}, {restaurant.location.city}, {restaurant.location.state} </li>
+//                     <li>Phone Number : {restaurant.display_phone} </li>
+//                     <li>Rating : {restaurant.rating} </li>
+//                     <li>More Info : {restaurant.url} </li>
+//                     </ul>

@@ -5,8 +5,8 @@ import { render } from 'react-dom'
 import { connect, Provider } from 'react-redux'
 
 import store from './store'
-import Bot from './components/Bot'
 import Bot1 from './components/Bot1'
+import Bot from './components/Bot'
 import {getBotResponse} from './reducers/index'
 
 
@@ -18,7 +18,7 @@ import {getBotResponse} from './reducers/index'
 render(
   <Provider store={store}>
     <Router history={browserHistory}>
-      <Route path="/" component={Bot1}>
+      <Route path="/" component={Bot}>
         <Route path="/bot" component={Bot} />
       </Route>
     </Router>
