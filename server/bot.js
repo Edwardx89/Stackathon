@@ -114,7 +114,7 @@ module.exports = require('express').Router()
 
   /* For Facebook Validation */
   .get('/facebook', (req, res) => {
-    console.log('this is get request with facebook')
+    console.log('this is get request with facebook', req.query['hub.verify_token'] === secrets.facebook)
     if (req.query['hub.mode'] && req.query['hub.verify_token'] === secrets.facebook) {
       res.status(200).send(req.query['hub.challenge']);
     } else {
