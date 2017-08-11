@@ -9,7 +9,6 @@ import { Card, CardTitle, Col, Row } from 'react-materialize'
 const clientId = secrets.yelpClientId;
 const clientSecret = secrets.yelpClientSecret;
 
-
 class Bot extends React.Component {
   constructor(props) {
     super(props);
