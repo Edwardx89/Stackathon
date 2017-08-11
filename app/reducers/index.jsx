@@ -47,23 +47,19 @@ const reducer = (state = initialState, action) => {
 import axios from 'axios'
 
 export const getBotResponse = (message) => dispatch => {
-  // console.log('bot response', message)
   axios.post('/bot', message)
   .then(res => res.data)
   .then(response => dispatch(getResponse(response)))
 }
 
 export const getYelp = (restaurants) => dispatch => {
-  // console.log('getting to yelp dispatcher', restaurants)
   axios.post('/bot/yelp', restaurants)
   .then(res => res.data)
   .then(restaurants => {
-    // console.log(restaurants)
     dispatch(getRestaurants(restaurants))
   })
 }
 
-// export const getIntent = (message) =>
 const rootReducer = combineReducers({
   reducer
 })

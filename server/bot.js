@@ -2,7 +2,6 @@
 const secrets = require('../secrets')
 const apiai = require('apiai')
 const app = apiai(secrets.apiAi)
-const axios = require('axios')
 const request = require('request')
 const yelp =require('yelp-fusion')
 
@@ -11,9 +10,6 @@ const clientSecret = secrets.yelpClientSecret;
 
 module.exports = require('express').Router()
   .post('/weather', (req, res, next) => {
-    // const textRequest = app.textRequest(req.body.message, {
-    //   sessionId: 'Where to get this sessionId?'
-    // })
     if (req.body.result.action === 'weather') {
       console.log('check parameters', req.body.result.parameters.address)
       const city = req.body.result.parameters.address.city || req.body.result.parameters.address['zip-code'] || req.body.result.parameters.address['admin-area']
@@ -77,27 +73,8 @@ module.exports = require('express').Router()
     })
     textRequest.on('response', function (response) {
       console.log('checking condition', response.result.actionIncomplete === false)
-    //   if (response.result.action === 'restaurant.search' && response.result.actionIncomplete === false){
-    //     console.log('restaurant is true')
-    //     const searchRequest = {
-    //       term: response.result.parameters.cuisine,
-    //       location: response.result.parameters['zip-code']
-    //     }
-    //     yelp.accessToken(clientId, clientSecret)
-    //     .then(response => {
-    //       const client = yelp.client(response.jsonBody.access_token);
-    //       client.search(searchRequest).then(response => {
-    //         const firstResult = response.jsonBody.businesses;
-    //         const prettyJson = JSON.stringify(firstResult, null, 4);
-    //         console.log(prettyJson)
-    //         res.send(prettyJson);
-    //     });
-    //   }).catch(e => {
-    //     console.log(e);
-    //   })
-    // } else {
+
       res.send(response.result.fulfillment.speech || 'Sorry I do not understand.')
-    // }
     })
 
     textRequest.on('error', function (error) {
@@ -186,23 +163,7 @@ function sendMessage(event) {
         }).catch(e => {
         console.log(e);
       });
-    //   axios.post('/bot/yelp', searchRequest)
-    //   .then(res => console.log('res.data',res.data))
-    //   .then(restaurants => restaurants.forEach((restaurant) => {
-    //     console.log('hitting restaurants in forEach', restaurant)
-    //     let business = restaurant.name+ ': ' +" "+ restaurant.location.address + ', '+ restaurant.location.city + ', '+ restaurant.location.state+'.'
-    //     request({
-    //       url: 'https://graph.facebook.com/v2.6/me/messages',
-    //       qs: {access_token: secrets.facebook},
-    //       method: 'POST',
-    //       json: {
-    //         recipient: { id: sender },
-    //         message: { text: business }
-    //       }
-    //     })
-    //   })
-    //   .catch((err) => console.log(err))
-    // )
+
     } else {
       let aiText = response.result.fulfillment.speech;
       request({
